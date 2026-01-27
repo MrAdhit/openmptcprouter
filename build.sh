@@ -974,7 +974,7 @@ if [ "$OMR_KERNEL" = "6.18" ]; then
 	echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
 	echo 'CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves -fno-plt -Wno-stringop-truncation -Wno-stringop-overread -Wno-calloc-transposed-args"' >> ".config"
 	# Remove for now packages that doesn't compile
-	rm -rf package/kernel/mt76
+	#rm -rf package/kernel/mt76
 	rm -rf package/kernel/rtl8812au-ct
 	rm -rf package/kernel/r8101
 	# Remove not needed patches
