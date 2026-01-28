@@ -668,10 +668,11 @@ define KernelPackage/crypto-lib-poly1305/config
   imply PACKAGE_kmod-crypto-hash
 endef
 
+ifeq ($(KERNEL_PATCHVER),6.12)
 ifndef CONFIG_TARGET_uml
 define KernelPackage/crypto-lib-poly1305/x86_64
   KCONFIG+=$(if $(CONFIG_LINUX_6_18),,CONFIG_CRYPTO_POLY1305_X86_64)
-  FILES+=$(LINUX_DIR)/arch/x86/crypto/poly1305-x86_64.ko@le6.12
+  FILES+=$(LINUX_DIR)/arch/x86/crypto/poly1305-x86_64.ko
 endef
 endif
 
@@ -684,9 +685,10 @@ KernelPackage/crypto-lib-poly1305/armeb=$(KernelPackage/crypto-lib-poly1305/arm)
 
 define KernelPackage/crypto-lib-poly1305/aarch64
   KCONFIG+=CONFIG_CRYPTO_POLY1305_NEON
-  FILES:=$(LINUX_DIR)/arch/arm64/crypto/poly1305-neon.ko@lt6.18
+  FILES:=$(LINUX_DIR)/arch/arm64/crypto/poly1305-neon.ko
 endef
-
+endif
+ifeq ($(KERNEL_PATCHVER),6.12)
 define KernelPackage/crypto-lib-poly1305/mips
   KCONFIG+=CONFIG_CRYPTO_POLY1305_MIPS
   FILES:=$(LINUX_DIR)/arch/mips/crypto/poly1305-mips.ko@lt6.18
@@ -695,6 +697,7 @@ endef
 KernelPackage/crypto-lib-poly1305/mipsel=$(KernelPackage/crypto-lib-poly1305/mips)
 KernelPackage/crypto-lib-poly1305/mips64=$(KernelPackage/crypto-lib-poly1305/mips)
 KernelPackage/crypto-lib-poly1305/mips64el=$(KernelPackage/crypto-lib-poly1305/mips)
+endif
 
 ifdef KernelPackage/crypto-lib-poly1305/$(ARCH)
   KernelPackage/crypto-lib-poly1305/$(CRYPTO_TARGET)=\
@@ -746,8 +749,9 @@ define KernelPackage/crypto-md5
 	CONFIG_CRYPTO_MD5 \
 	CONFIG_CRYPTO_MD5_OCTEON \
 	CONFIG_CRYPTO_MD5_PPC
-  FILES:=$(LINUX_DIR)/crypto/md5.ko
-  AUTOLOAD:=$(call AutoLoad,09,md5)
+  FILES:=$(LINUX_DIR)/crypto/md5.ko  \
+    $(LINUX_DIR)/lib/crypto/libmd5.ko@ge6.18
+  AUTOLOAD:=$(call AutoLoad,09,md5 !LINUX_6_12:libmd5)
   $(call AddDepends/crypto)
 endef
 
@@ -1030,10 +1034,12 @@ define KernelPackage/crypto-sha1/mpc85xx
 endef
 
 ifndef CONFIG_TARGET_uml
+ifndef CONFIG_LINUX_6_18
 define KernelPackage/crypto-sha1/x86_64
-  FILES+=$(LINUX_DIR)/arch/x86/crypto/sha1-ssse3.ko@lt6.18
-  AUTOLOAD+=$(call AutoLoad,09,!LINUX_6_18:sha1-ssse3)
+  FILES+=$(LINUX_DIR)/arch/x86/crypto/sha1-ssse3.ko
+  AUTOLOAD+=$(call AutoLoad,09,sha1-ssse3)
 endef
+endif
 endif
 
 ifdef KernelPackage/crypto-sha1/$(ARCH)
