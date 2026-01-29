@@ -524,7 +524,7 @@ define Device/bananapi_bpi-r4
   DEVICE_DTS_CONFIG := config-mt7988a-bananapi-bpi-r4
   $(call Device/bananapi_bpi-r4-common)
 endef
-#TARGET_DEVICES += bananapi_bpi-r4
+TARGET_DEVICES += bananapi_bpi-r4
 
 define Device/bananapi_bpi-r4-poe
   DEVICE_MODEL := BPi-R4 2.5GE
@@ -538,7 +538,7 @@ endif
   DEVICE_PACKAGES += mt7988-2p5g-phy-firmware
   SUPPORTED_DEVICES += bananapi,bpi-r4-2g5
 endef
-#TARGET_DEVICES += bananapi_bpi-r4-poe
+TARGET_DEVICES += bananapi_bpi-r4-poe
 
 define Device/cetron_ct3003
   DEVICE_VENDOR := Cetron
@@ -2223,3 +2223,13 @@ define Device/z8109ax-128m
   IMAGE_SIZE := 131072k
 endef
 TARGET_DEVICES += z8109ax-128m
+
+define Device/zbtlink_zbt-z8802be
+  DEVICE_VENDOR := Zbtlink
+  DEVICE_MODEL := ZBT-Z8802BE
+  DEVICE_DTS := mt7988d-zbtlink-zbt-z8802be
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_PACKAGES := kmod-usb3 mt7988-2p5g-phy-firmware kmod-mt7992-firmware mt7988-wo-firmware
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+TARGET_DEVICES += zbtlink_zbt-z8802be
