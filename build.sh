@@ -230,7 +230,7 @@ if [ -n "$CUSTOM_FEED" ]; then
 	echo "src-link ${OMR_DIST} $(readlink -f ${CUSTOM_FEED})" >> "$OMR_TARGET/${OMR_KERNEL}/source/feeds.conf"
 fi
 
-if [ "$OMR_KERNEL" != "6.12" ]; then
+if [ "$OMR_KERNEL" != "6.12" ] && [ "$OMR_KERNEL" != "6.18" ]; then
 	if [ "$OMR_DIST" = "openmptcprouter" ]; then
 		cat > "$OMR_TARGET/${OMR_KERNEL}/source/package/system/opkg/files/customfeeds.conf" <<-EOF
 		src/gz openwrt_luci http://packages.openmptcprouter.com/${OMR_RELEASE}/${OMR_REAL_TARGET}/luci
