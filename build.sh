@@ -371,7 +371,7 @@ else
 	echo "# CONFIG_PACKAGE_shortcut-fe is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
 if [ "$OMR_KERNEL" != "5.4" ] && [ "$OMR_TARGET" != "x86_64" ] && [ "$OMR_TARGET" != "x86" ]; then
-	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
+#	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 #	echo "# CONFIG_PACKAGE_kmod-r8168 is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo "CONFIG_PACKAGE_kmod-r8168=m" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
@@ -904,8 +904,8 @@ if [ "$OMR_KERNEL" = "6.12" ]; then
 	echo "# CONFIG_PACKAGE_kmod-meraki-mx100 is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-gpio-nct5104d is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-r8168 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-r8125-rss is not set" >> ".config"
+#	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> ".config"
+#	echo "# CONFIG_PACKAGE_kmod-r8125-rss is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-r8126 is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-r8126-rss is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-button-hotplug is not set" >> ".config"
@@ -954,8 +954,8 @@ if [ "$OMR_KERNEL" = "6.18" ]; then
 	echo "# CONFIG_PACKAGE_kmod-meraki-mx100 is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-gpio-nct5104d is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-r8168 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-r8125-rss is not set" >> ".config"
+#	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> ".config"
+#	echo "# CONFIG_PACKAGE_kmod-r8125-rss is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-r8126 is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-r8126-rss is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-button-hotplug is not set" >> ".config"
