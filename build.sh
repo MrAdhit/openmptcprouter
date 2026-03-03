@@ -972,7 +972,7 @@ if [ "$OMR_KERNEL" = "6.18" ]; then
 	echo "CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y" >> ".config"
 	echo "# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set" >> ".config"
 	echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
-	echo 'CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves -fno-plt -Wno-stringop-truncation -Wno-stringop-overread -Wno-calloc-transposed-args"' >> ".config"
+	echo 'CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves -fno-plt -Wno-stringop-truncation -Wno-stringop-overread -Wno-calloc-transposed-args -Wno-error=int-conversion"' >> ".config"
 	# Remove for now packages that doesn't compile
 	#rm -rf package/kernel/mt76
 	rm -rf package/kernel/rtl8812au-ct
