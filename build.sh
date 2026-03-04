@@ -33,6 +33,7 @@ OMR_KEEPBIN=${OMR_KEEPBIN:-no}
 OMR_IMG=${OMR_IMG:-yes}
 OMR_LOG=${OMR_LOG:-no}
 #OMR_UEFI=${OMR_UEFI:-yes}
+OMR_PARTSIZE=${OMR_PARTSIZE:-512}
 OMR_PACKAGES=${OMR_PACKAGES:-full}
 OMR_ALL_PACKAGES=${OMR_ALL_PACKAGES:-no}
 OMR_TARGET=${OMR_TARGET:-x86_64}
@@ -322,6 +323,10 @@ if [ "$OMR_IMG" = "yes" ] && [ "$OMR_TARGET" = "x86_64" ]; then
 	echo 'CONFIG_VDI_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo 'CONFIG_VMDK_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo 'CONFIG_VHDX_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
+fi
+
+if [ "$OMR_TARGET" = "x86_64" ]; then
+	echo "CONFIG_TARGET_ROOTFS_PARTSIZE=${OMR_PARTSIZE}" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
 
 if [ "$OMR_LOG" = "yes" ]; then 
