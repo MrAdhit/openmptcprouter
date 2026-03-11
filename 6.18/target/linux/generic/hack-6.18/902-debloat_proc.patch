@@ -29,7 +29,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 
 --- a/fs/locks.c
 +++ b/fs/locks.c
-@@ -2966,6 +2966,8 @@ static const struct seq_operations locks
+@@ -2974,6 +2974,8 @@ static const struct seq_operations locks
  
  static int __init proc_locks_init(void)
  {
@@ -235,7 +235,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	if (!pe)
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -5128,6 +5128,9 @@ static int vmalloc_info_show(struct seq_
+@@ -5133,6 +5133,9 @@ static int vmalloc_info_show(struct seq_
  
  static int __init proc_vmalloc_init(void)
  {
@@ -247,7 +247,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  }
 --- a/mm/vmstat.c
 +++ b/mm/vmstat.c
-@@ -2286,10 +2286,12 @@ void __init init_mm_internals(void)
+@@ -2288,10 +2288,12 @@ void __init init_mm_internals(void)
  	start_shepherd_timer();
  #endif
  #ifdef CONFIG_PROC_FS
@@ -287,7 +287,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		goto err;
 --- a/net/core/net-procfs.c
 +++ b/net/core/net-procfs.c
-@@ -311,10 +311,12 @@ static int __net_init dev_proc_net_init(
+@@ -329,10 +329,12 @@ static int __net_init dev_proc_net_init(
  	if (!proc_create_net("dev", 0444, net->proc_net, &dev_seq_ops,
  			sizeof(struct seq_net_private)))
  		goto out;
@@ -299,10 +299,10 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 -	if (!proc_create_net("ptype", 0444, net->proc_net, &ptype_seq_ops,
 +	if (!IS_ENABLED(CONFIG_PROC_STRIPPED) &&
 +			!proc_create_net("ptype", 0444, net->proc_net, &ptype_seq_ops,
- 			sizeof(struct seq_net_private)))
+ 			sizeof(struct ptype_iter_state)))
  		goto out_softnet;
  
-@@ -324,9 +326,11 @@ static int __net_init dev_proc_net_init(
+@@ -342,9 +344,11 @@ static int __net_init dev_proc_net_init(
  out:
  	return rc;
  out_ptype:
@@ -316,7 +316,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  out_dev:
  	remove_proc_entry("dev", net->proc_net);
  	goto out;
-@@ -336,8 +340,10 @@ static void __net_exit dev_proc_net_exit
+@@ -354,8 +358,10 @@ static void __net_exit dev_proc_net_exit
  {
  	wext_proc_exit(net);
  
@@ -331,7 +331,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
 --- a/net/core/sock.c
 +++ b/net/core/sock.c
-@@ -4348,6 +4348,8 @@ static __net_initdata struct pernet_oper
+@@ -4349,6 +4349,8 @@ static __net_initdata struct pernet_oper
  
  static int __init proto_init(void)
  {
@@ -342,7 +342,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
 --- a/net/ipv4/fib_trie.c
 +++ b/net/ipv4/fib_trie.c
-@@ -3009,11 +3009,13 @@ static const struct seq_operations fib_r
+@@ -3010,11 +3010,13 @@ static const struct seq_operations fib_r
  
  int __net_init fib_proc_init(struct net *net)
  {
@@ -358,7 +358,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  			fib_triestat_seq_show, NULL))
  		goto out2;
  
-@@ -3024,17 +3026,21 @@ int __net_init fib_proc_init(struct net
+@@ -3025,17 +3027,21 @@ int __net_init fib_proc_init(struct net
  	return 0;
  
  out3:
