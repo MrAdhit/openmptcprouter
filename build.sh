@@ -112,10 +112,10 @@ if [ "$ONLY_PREPARE" != "yes" ]; then
 			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "be769afc62310631509826e41863ec7a71e764a4"
 			_get_repo feeds/${OMR_KERNEL}/routing ${OMR_OPENWRT_GIT}/openwrt/routing "f2ee837d3714f86e9d636302e9f69612c71029cb"
 		elif [ "$OMR_KERNEL" = "6.12" ] || [ "$OMR_KERNEL" = "6.18" ]; then
-			_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/openwrt/openwrt "92a94dc9b0df12111e4c81ff1a280e32deb5eba3"
-			_get_repo feeds/${OMR_KERNEL}/packages ${OMR_OPENWRT_GIT}/openwrt/packages "d5ec989a42fd4defd194bee416bb172ccaa66b4d"
-			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "fd8c8a4fe33580c5c94745c966fc2d184f0bde3e"
-			_get_repo feeds/${OMR_KERNEL}/routing ${OMR_OPENWRT_GIT}/openwrt/routing "bdf571c0ea5b9b029707787e0f89be7bbd3d75e3"
+			_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/openwrt/openwrt "4f107d768aa560b323ac215f974aabd409fb763f"
+			_get_repo feeds/${OMR_KERNEL}/packages ${OMR_OPENWRT_GIT}/openwrt/packages "78ba767e097b53184a65f4e42d39e4d958916c1d"
+			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "8e3bc67c87e455102cd983ba4ab6b86af93be8af"
+			_get_repo feeds/${OMR_KERNEL}/routing ${OMR_OPENWRT_GIT}/openwrt/routing "44f2d58cbf95fe5a18291238984db97bc36237ec"
 		fi
 	elif [ "$OMR_OPENWRT" = "coolsnowwolfmix" ]; then
 		_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/coolsnowwolf/lede.git "master"
@@ -325,7 +325,7 @@ if [ "$OMR_IMG" = "yes" ] && [ "$OMR_TARGET" = "x86_64" ]; then
 	echo 'CONFIG_VHDX_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
 
-if [ "$OMR_TARGET" = "x86_64" ]; then
+if [ "$OMR_TARGET" = "x86_64" ] || [ "$OMR_TARGET" = "r4s" ] || [ "$OMR_TARGET" = "r5s" ] || [ "$OMR_TARGET" = "rpi4" ] || [ "$OMR_TARGET" = "rpi5" ]; then
 	echo "CONFIG_TARGET_ROOTFS_PARTSIZE=${OMR_PARTSIZE}" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
 
