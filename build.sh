@@ -114,7 +114,7 @@ if [ "$ONLY_PREPARE" != "yes" ]; then
 		elif [ "$OMR_KERNEL" = "6.12" ] || [ "$OMR_KERNEL" = "6.18" ]; then
 			_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/openwrt/openwrt "4f107d768aa560b323ac215f974aabd409fb763f"
 			_get_repo feeds/${OMR_KERNEL}/packages ${OMR_OPENWRT_GIT}/openwrt/packages "78ba767e097b53184a65f4e42d39e4d958916c1d"
-			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "8e3bc67c87e455102cd983ba4ab6b86af93be8af"
+			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "59465752a8b0bb2379b613642505b8bd28854e1e"
 			_get_repo feeds/${OMR_KERNEL}/routing ${OMR_OPENWRT_GIT}/openwrt/routing "44f2d58cbf95fe5a18291238984db97bc36237ec"
 		fi
 	elif [ "$OMR_OPENWRT" = "coolsnowwolfmix" ]; then
