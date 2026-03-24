@@ -289,7 +289,8 @@ CONFIG_KERNEL_NF_CONNTRACK_DESTROY_HOOK=y
 # CONFIG_PACKAGE_libustream-mbedtls is not set
 # CONFIG_PACKAGE_wpad-basic-mbedtls is not set
 # CONFIG_PACKAGE_wpad-basic-wolfssl is not set
-CONFIG_PACKAGE_kmod-nft-queue=m
+CONFIG_PACKAGE_kmod-nft-queue=y
+CONFIG_PACKAGE_kmod-nfnetlink-queue=y
 # CONFIG_PACKAGE_apk-mbedtls is not set
 CONFIG_KERNEL_KALLSYMS=y
 CONFIG_KERNEL_KALLSYMS_ALL=y
