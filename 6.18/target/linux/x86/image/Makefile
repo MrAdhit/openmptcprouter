@@ -129,8 +129,8 @@ define Device/Default
   KERNEL_INSTALL := 1
   KERNEL_NAME := bzImage
   ifeq ($(CONFIG_QCOW2_IMAGES),y)
-    ARTIFACTS-$$(CONFIG_GRUB_IMAGES) += image.qcow2
-    ARTIFACTS-$$(CONFIG_GRUB_EFI_IMAGES) += image-efi.qcow2
+    ARTIFACTS-$$(CONFIG_GRUB_IMAGES) += combined.qcow2
+    ARTIFACTS-$$(CONFIG_GRUB_EFI_IMAGES) += combined-efi.qcow2
   endif
   ifeq ($(CONFIG_ISO_IMAGES),y)
     ARTIFACTS-$$(CONFIG_GRUB_IMAGES) += image.iso
