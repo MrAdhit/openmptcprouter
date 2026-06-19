@@ -11,7 +11,7 @@
 
 / {
 	model = "Zbtlink Z8802BE";
-	compatible = "zbtlink,zbt-z8802be", "mediatek,mt7988d";
+	compatible = "z8802be", "zbtlink,zbt-z8802be", "mediatek,mt7988d";
 
 	aliases {
 		serial0 = &serial0;
@@ -38,16 +38,16 @@
 	gpio-export {
 		compatible = "gpio-export";
 
-		5g1 {
-				gpio-export,name = "5g1";
-				gpio-export,output = <0>;
-				gpios = <&pio 1 GPIO_ACTIVE_HIGH>;
+		modem1 {
+			gpio-export,name = "modem1";
+			gpio-export,output = <0>;
+			gpios = <&pio 1 GPIO_ACTIVE_HIGH>;
 		};
 
-		5g2 {
-				gpio-export,name = "5g2";
-				gpio-export,output = <0>;
-				gpios = <&pio 61 GPIO_ACTIVE_HIGH>;
+		modem2 {
+			gpio-export,name = "modem2";
+			gpio-export,output = <0>;
+			gpios = <&pio 61 GPIO_ACTIVE_HIGH>;
 		};
 	};
 
@@ -89,14 +89,14 @@
 			gpios = <&pio 2 GPIO_ACTIVE_LOW>;
 		};
 
-		5g1 {
+		modem1 {
 			function = LED_FUNCTION_MOBILE;
 			color = <LED_COLOR_ID_GREEN>;
 			function-enumerator = <1>;
 			gpios = <&pio 58 GPIO_ACTIVE_LOW>;
 		};
 
-		5g2 {
+		modem2 {
 			function = LED_FUNCTION_MOBILE;
 			color = <LED_COLOR_ID_GREEN>;
 			function-enumerator = <2>;
@@ -142,8 +142,6 @@
 &gmac1 {
 	nvmem-cells = <&macaddr_factory_ffffa>;
 	nvmem-cell-names = "mac-address";
-	label = "wan";
-
 	phy-mode = "internal";
 	phy-connection-type = "internal";
 	phy = <&int_2p5g_phy>;
