@@ -224,7 +224,6 @@
 };
 
 &pcie0 {
-	reset-gpios = <&pio 7 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 
 	pcie@0,0 {
@@ -232,27 +231,27 @@
 		#address-cells = <3>;
 		#size-cells = <2>;
 
-		wifi@0,0 {
-			compatible = "mediatek,mt76";
+		mt7996@0,0 {
 			reg = <0x0000 0 0 0 0>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-			nvmem-cells = <&eeprom_factory_0>;
 			nvmem-cell-names = "eeprom";
-
-			band@0 {
-				reg = <0>;
-				nvmem-cells = <&macaddr_factory_4 0>;
-				nvmem-cell-names = "mac-address";
-			};
-
-			band@1 {
-				reg = <1>;
-				nvmem-cells = <&macaddr_factory_a 1>;
-				nvmem-cell-names = "mac-address";
-			};
+			nvmem-cells = <&mt7996_eeprom>;
 		};
 	};
+};
+
+&pcie1 {
+	status = "okay";
+};
+
+&pcie3 {
+	/*
+	 * Since the PCIe probe order is PCIe3 -> PCIe0 -> PCIe1 and there is
+	 * only one reset GPIO available, it must be connected to the first
+	 * device in the probe sequence (PCIe3).
+	 */
+	wifi-reset-gpios = <&pio 7 GPIO_ACTIVE_LOW>;
+	wifi-reset-msleep = <100>;
+	status = "okay";
 };
 
 &pio {
