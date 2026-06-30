@@ -234,7 +234,7 @@
 		mt7996@0,0 {
 			reg = <0x0000 0 0 0 0>;
 			nvmem-cell-names = "eeprom";
-			nvmem-cells = <&mt7996_eeprom>;
+			nvmem-cells = <&eeprom_factory_0>;
 		};
 	};
 };
