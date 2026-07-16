@@ -21,7 +21,7 @@ CONF_IMAGE=
 CONF_BACKUP_LIST=0
 CONF_BACKUP=
 CONF_RESTORE=
-CONF_EXCLUSIVE=1
+CONF_EXCLUSIVE=0
 USE_CURR_PART=0
 NEED_IMAGE=
 HELP=0
@@ -52,7 +52,7 @@ while [ -n "$1" ]; do
 		-u) SKIP_UNCHANGED=1;;
 		-b|--create-backup) CONF_BACKUP="$2" NEED_IMAGE=1; shift;;
 		-r|--restore-backup) CONF_RESTORE="$2" NEED_IMAGE=1; shift;;
-		-e) CONF_EXCLUSIVE=0;;
+		-e) CONF_EXCLUSIVE=1;;
 		-l|--list-backup) CONF_BACKUP_LIST=1;;
 		-f) CONF_IMAGE="$2"; shift;;
 		-s) USE_CURR_PART=1;;
