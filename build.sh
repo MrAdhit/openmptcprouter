@@ -42,7 +42,7 @@ UPSTREAM=${UPSTREAM:-no}
 #SYSLOG=${SYSLOG:-busybox-syslogd}
 #SYSLOG=${SYSLOG:-syslog-ng}
 SYSLOG=${SYSLOG:-logd}
-OMR_KERNEL=${OMR_KERNEL:-5.4}
+OMR_KERNEL=${OMR_KERNEL:-6.6}
 SHORTCUT_FE=${SHORTCUT_FE:-no}
 DISABLE_FAILSAFE=${DISABLE_FAILSAFE:-no}
 #OMR_RELEASE=${OMR_RELEASE:-$(git describe --tags `git rev-list --tags --max-count=1` | sed 's/^\([0-9.]*\).*/\1/')}
@@ -61,10 +61,6 @@ OMR_OPENWRT_GIT=${OMR_OPENWRT_GIT:-https://github.com}
 OMR_FORCE_DSA=${OMR_FORCE_DSA:-0}
 
 OMR_LIBC=${OMR_LIBC:-musl}
-
-if [ "$OMR_KERNEL" = "5.4" ] && [ "$OMR_TARGET" = "rutx12" ]; then
-	OMR_TARGET_CONFIG="config-rutx"
-fi
 
 if [ ! -f "$OMR_TARGET_CONFIG" ]; then
 	echo "Target $OMR_TARGET not found !"
@@ -96,16 +92,7 @@ fi
 if [ "$ONLY_PREPARE" != "yes" ]; then
 	#_get_repo source https://github.com/ysurac/openmptcprouter-source "master"
 	if [ "$OMR_OPENWRT" = "default" ]; then
-		if [ "$OMR_KERNEL" = "5.4" ]; then
-			# Use OpenWrt 21.02 for 5.4 kernel
-			_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/openwrt/openwrt "170d9e447df0f52882a8b7a61bf940b062b2cacc"
-			_get_repo feeds/${OMR_KERNEL}/packages ${OMR_OPENWRT_GIT}/openwrt/packages "b3a6bb839059546a52df00af3e1aa97dba75de22"
-			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "e4c46338b196e486a88b1a75b78e283708c82bc4"
-		elif [ "$OMR_KERNEL" = "6.1" ]; then
-			_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/openwrt/openwrt "acf40c022e3d8949c7bb1f9c5212eb91512ae8a9"
-			_get_repo feeds/${OMR_KERNEL}/packages ${OMR_OPENWRT_GIT}/openwrt/packages "3ee7b46610e9dbd8fd2bba87bd06024cd0d9c08f"
-			_get_repo feeds/${OMR_KERNEL}/luci ${OMR_OPENWRT_GIT}/openwrt/luci "ddda66aa8caa5e929cf7a542a79e2c3ce69eb66c"
-		elif [ "$OMR_KERNEL" = "6.6" ] || [ "$OMR_KERNEL" = "6.10" ] || [ "$OMR_KERNEL" = "6.11" ]; then
+		if [ "$OMR_KERNEL" = "6.6" ] || [ "$OMR_KERNEL" = "6.11" ]; then
 			# Use OpenWRT 24.10 for 6.6 kernel
 			_get_repo "$OMR_TARGET/${OMR_KERNEL}/source" ${OMR_OPENWRT_GIT}/openwrt/openwrt "0b392b925fa16c40dccc487753a4412bd054cd63"
 			_get_repo feeds/${OMR_KERNEL}/packages ${OMR_OPENWRT_GIT}/openwrt/packages "234806df39e38734ce5a3dfe0d94f8811cb57440"
@@ -167,21 +154,13 @@ if [ "$ONLY_GET_REPO" = "yes" ]; then
 fi
 rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/files" "$OMR_TARGET/${OMR_KERNEL}/source/tmp"
 #rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/mediatek/patches-4.14"
-#rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/mediatek/patches-5.4"
 #rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/package/boot/uboot-mediatek"
 #rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/package/boot/arm-trusted-firmware-mediatek"
-if [ "${OMR_KERNEL}" = "5.4" ]; then
-	echo "rm -rf $OMR_TARGET/${OMR_KERNEL}/source/package/boot/uboot-rockchip"
-	rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/boot/uboot-rockchip"
-fi
 echo "rm -rf $OMR_TARGET/${OMR_KERNEL}/source/package/boot/uboot-mvebu"
 rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/boot/uboot-mvebu"
-[ "${OMR_KERNEL}" = "6.1" ] || [ "${OMR_KERNEL}" = "6.6" ] || [ "${OMR_KERNEL}" = "6.10" ] || [ "${OMR_KERNEL}" = "6.11" ] || [ "${OMR_KERNEL}" = "6.12" ] && {
+[ "${OMR_KERNEL}" = "6.6" ] || [ "${OMR_KERNEL}" = "6.11" ] || [ "${OMR_KERNEL}" = "6.12" ] && {
 	echo "rm -rf $OMR_TARGET/${OMR_KERNEL}/source/package/boot/uboot-ipq40xx"
 	rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/boot/uboot-ipq40xx"
-}
-[ "${OMR_KERNEL}" = "6.1" ] && {
-	rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/target/linux/bcm27xx/patches-6.1"
 }
 #[ "${OMR_KERNEL}" = "6.6" ] && {
 #	rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/libs/mbedtls"
@@ -194,12 +173,6 @@ rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/boot/uboot-mvebu"
 #rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/tools/dwarves"
 
 
-[ "${OMR_KERNEL}" = "5.4" ] && rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/tools/firmware-utils"
-if ([ "$OMR_TARGET" = "rutx" ] || [ "$OMR_TARGET" = "rutx12" ]) && [ "${OMR_KERNEL}" = "5.4" ]; then
-#	cp -rf root/* "$OMR_TARGET/${OMR_KERNEL}/source"
-	cp -rf common/* "$OMR_TARGET/${OMR_KERNEL}/source/"
-	cp -rf ${OMR_KERNEL}/* "$OMR_TARGET/${OMR_KERNEL}/source/"
-else
 	# There is many customization to support rutx and this seems to break other ipq40xx, so dirty workaround for now
 #	[ -d "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx" ] && mv -f "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx" "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx.old"
 #	cp -rf root/* "$OMR_TARGET/${OMR_KERNEL}/source"
@@ -209,7 +182,6 @@ else
 	cp -rf ${OMR_KERNEL}/* "$OMR_TARGET/${OMR_KERNEL}/source"
 #	rm -rf "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx"
 #	mv -f "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx.old" "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/ipq40xx"
-fi
 if [ -n "$CUSTOM_FEED" ] && [ -d ${CUSTOM_FEED}/source/${OMR_TARGET}/${OMR_KERNEL} ]; then
 	echo "Copy ${CUSTOM_FEED}/source/${OMR_TARGET}/${OMR_KERNEL}/* to $OMR_TARGET/${OMR_KERNEL}/source"
 	cp -rf ${CUSTOM_FEED}/source/${OMR_TARGET}/${OMR_KERNEL}/* "$OMR_TARGET/${OMR_KERNEL}/source"
@@ -381,17 +353,13 @@ else
 	echo "# CONFIG_PACKAGE_kmod-shortcut-fe is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo "# CONFIG_PACKAGE_shortcut-fe is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
-if [ "$OMR_KERNEL" != "5.4" ] && [ "$OMR_TARGET" != "x86_64" ] && [ "$OMR_TARGET" != "x86" ]; then
+if [ "$OMR_TARGET" != "x86_64" ] && [ "$OMR_TARGET" != "x86" ]; then
 #	echo "# CONFIG_PACKAGE_kmod-r8125 is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 #	echo "# CONFIG_PACKAGE_kmod-r8168 is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo "CONFIG_PACKAGE_kmod-r8168=m" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
-if [ "$OMR_KERNEL" = "6.1" ] || [ "$OMR_KERNEL" = "6.6" ] || [ "$OMR_KERNEL" = "6.10" ] || [ "$OMR_KERNEL" = "6.11" ] || [ "$OMR_KERNEL" = "6.12" ]; then
+if [ "$OMR_KERNEL" = "6.6" ] || [ "$OMR_KERNEL" = "6.11" ] || [ "$OMR_KERNEL" = "6.12" ]; then
 	echo "# CONFIG_PACKAGE_kmod-rtl8812au-ct is not set" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
-fi
-
-if ([ "$OMR_TARGET" = "rutx" ] || [ "$OMR_TARGET" = "rutx12" ]) && [ "$OMR_KERNEL" = "5.4" ]; then
-	echo "CONFIG_PACKAGE_kmod-r2ec=y" >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
 
 if [ "$OMR_TARGET" = "bpi-r1" -a "$OMR_OPENWRT" = "master" ]; then
@@ -409,18 +377,7 @@ if [ "$OMR_TARGET" = "bpi-r1" -a "$OMR_OPENWRT" = "master" ]; then
 fi
 
 if [ "$OMR_TARGET" = "bpi-r1" ]; then
-	# Check kernel version
-	if [ "$OMR_KERNEL" != "5.4" ]; then
-		echo "Sorry, but for now kernel 5.4 is the only supported one."
-		exit 1
-	fi
-	
-	# Remove the 310-Revert-ARM-dts-sun7i-Add-BCM53125-switch-nodes-to-th patch
-	echo -n "Removing unwanted patches from kernel $OMR_KERNEL..."
-	rm -f "$OMR_TARGET/${OMR_KERNEL}/source/target/linux/sunxi/patches-$OMR_KERNEL/310-Revert-ARM-dts-sun7i-Add-BCM53125-switch-nodes-to-th.patch" >/dev/null 2>&1
-	echo "done"
-	
-	if [ "$OMR_FORCE_DSA" = "1" ]; then 
+	if [ "$OMR_FORCE_DSA" = "1" ]; then
 		# Remove support for swconfig
 		echo -n "Removing swconfig support from openwrt config..."
 		for i in DEFAULT_swconfig PACKAGE_swconfig PACKAGE_kmod-swconfig; do
@@ -507,7 +464,7 @@ cd "$OMR_TARGET/${OMR_KERNEL}/source"
 #	echo "Done"
 #fi
 
-if [ "$OMR_KERNEL" != "6.6" ] && [ "$OMR_KERNEL" != "6.10" ] && [ "$OMR_KERNEL" != "6.11" ] && [ "$OMR_KERNEL" != "6.12" ] && [ "$OMR_KERNEL" != "6.18" ]; then
+if [ "$OMR_KERNEL" != "6.6" ] && [ "$OMR_KERNEL" != "6.11" ] && [ "$OMR_KERNEL" != "6.12" ] && [ "$OMR_KERNEL" != "6.18" ]; then
 	echo "Checking if No check patch is set or not"
 	if ! patch -Rf -N -p1 -s --dry-run < ../../../patches/nocheck.patch; then
 		echo "apply..."
@@ -533,9 +490,6 @@ if [ "$OMR_KERNEL" != "6.18" ]; then
 fi
 
 echo "Checking if Meson patch is set or not"
-if [ "$OMR_KERNEL" = "5.4" ] && ! patch -Rf -N -p1 -s --dry-run < ../../../patches/meson.patch; then
-	patch -N -p1 -s < ../../../patches/meson.patch
-fi
 echo "Done"
 
 #echo "Checking if remove_abi patch is set or not"
@@ -544,16 +498,6 @@ echo "Done"
 #	patch -N -p1 -s < ../../../patches/remove_abi.patch
 #fi
 #echo "Done"
-
-# Add BBR2 patch, only working on 64bits images for now
-if ([ "$OMR_KERNEL" = "5.4" ] || [ "$OMR_KERNEL" = "5.4" ]) && ([ "$OMR_TARGET" = "x86_64" ] || [ "$OMR_TARGET" = "bpi-r64" ] || [ "$OMR_TARGET" = "rpi4" ] || [ "$OMR_TARGET" = "espressobin" ] || [ "$OMR_TARGET" = "r2s" ] || [ "$OMR_TARGET" = "r4s" ] || [ "$OMR_TARGET" = "rpi3" ]); then
-	echo "Checking if BBRv2 patch is set or not"
-	if ! patch -Rf -N -p1 -s --dry-run < ../../../patches/bbr2.patch; then
-		echo "apply..."
-		patch -N -p1 -s < ../../../patches/bbr2.patch
-	fi
-	echo "Done"
-fi
 
 echo "Checking if smsc75xx patch is set or not"
 if ! patch -Rf -N -p1 -s --dry-run < ../../../patches/smsc75xx.patch; then
@@ -566,13 +510,6 @@ echo "Done"
 #if ! patch -Rf -N -p1 -s --dry-run < ../../../patches/ipt-nat6.patch; then
 #	echo "apply..."
 #	patch -N -p1 -s < ../../../patches/ipt-nat6.patch
-#fi
-#echo "Done"
-
-#echo "Checking if mvebu patch is set or not"
-#if [ ! -d target/linux/mvebu/patches-5.4 ]; then
-#	echo "apply..."
-#	patch -N -p1 -s < ../../../patches/mvebu-5.14.patch
 #fi
 #echo "Done"
 
@@ -595,17 +532,6 @@ echo "Done"
 #fi
 #echo "Done"
 
-if [ -f target/linux/mediatek/patches-5.4/0999-hnat.patch ]; then
-	rm -f target/linux/mediatek/patches-5.4/0999-hnat.patch
-fi
-
-if [ -f target/linux/ipq806x/patches-5.4/0063-2-tsens-support-configurable-interrupts.patch ]; then
-	rm -f target/linux/ipq806x/patches-5.4/0063-*
-fi
-#if [ -f target/linux/ipq40xx/patches-5.4/100-GPIO-add-named-gpio-exports.patch ]; then
-#	rm -f target/linux/ipq40xx/patches-5.4/100-GPIO-add-named-gpio-exports.patch
-#fi
-
 if [ -f package/boot/uboot-rockchip/patches/100-rockchip-rk3328-Add-support-for-FriendlyARM-NanoPi-R.patch ]; then
 	rm -f package/boot/uboot-rockchip/patches/100-rockchip-rk3328-Add-support-for-FriendlyARM-NanoPi-R.patch
 fi
@@ -620,202 +546,9 @@ fi
 #fi
 #echo "Done"
 
-#if [ -f target/linux/generic/backport-5.4/370-netfilter-nf_flow_table-fix-offloaded-connection-tim.patch ]; then
-#	rm -f target/linux/generic/backport-5.4/370-netfilter-nf_flow_table-fix-offloaded-connection-tim.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/640-netfilter-nf_flow_table-add-hardware-offload-support.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/640-netfilter-nf_flow_table-add-hardware-offload-support.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/641-netfilter-nf_flow_table-support-hw-offload-through-v.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/641-netfilter-nf_flow_table-support-hw-offload-through-v.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/642-net-8021q-support-hardware-flow-table-offload.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/642-net-8021q-support-hardware-flow-table-offload.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/643-net-bridge-support-hardware-flow-table-offload.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/643-net-bridge-support-hardware-flow-table-offload.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/644-net-pppoe-support-hardware-flow-table-offload.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/644-net-pppoe-support-hardware-flow-table-offload.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/645-netfilter-nf_flow_table-rework-hardware-offload-time.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/645-netfilter-nf_flow_table-rework-hardware-offload-time.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/647-net-dsa-support-hardware-flow-table-offload.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/647-net-dsa-support-hardware-flow-table-offload.patch
-#fi
-#if [ -f target/linux/generic/hack-5.4/650-netfilter-add-xt_OFFLOAD-target.patch ]; then
-#	rm -f target/linux/generic/hack-5.4/650-netfilter-add-xt_OFFLOAD-target.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/690-net-add-support-for-threaded-NAPI-polling.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/690-net-add-support-for-threaded-NAPI-polling.patch
-#fi
-#if [ -f target/linux/generic/hack-5.4/647-netfilter-flow-acct.patch ]; then
-#	rm -f target/linux/generic/hack-5.4/647-netfilter-flow-acct.patch
-#fi
-#if [ -f target/linux/generic/hack-5.4/953-net-patch-linux-kernel-to-support-shortcut-fe.patch ]; then
-#	rm -f target/linux/generic/hack-5.4/953-net-patch-linux-kernel-to-support-shortcut-fe.patch
-#fi
-#if [ -f target/linux/bcm27xx/patches-5.4/950-1031-net-lan78xx-Ack-pending-PHY-ints-when-resetting.patch ]; then
-#	rm -f target/linux/bcm27xx/patches-5.4/950-1031-net-lan78xx-Ack-pending-PHY-ints-when-resetting.patch
-#fi
-#if [ -f target/linux/generic/pending-5.4/770-16-net-ethernet-mediatek-mtk_eth_soc-add-flow-offloadin.patch ]; then
-#	rm -f target/linux/generic/pending-5.4/770-16-net-ethernet-mediatek-mtk_eth_soc-add-flow-offloadin.patch
-#fi
 NOT_SUPPORTED="0"
 
-if [ "$OMR_KERNEL" = "5.4" ]; then
-	echo "Set to kernel 5.4 for rpi arch"
-	find target/linux/bcm27xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER=5.10%KERNEL_PATCHVER:=5.4%g' {} \;
-	find target/linux/bcm27xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.10%KERNEL_PATCHVER:=5.4%g' {} \;
-	echo "Done"
-	echo "Set to kernel 5.4 for x86 arch"
-	find target/linux/x86 -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.10%KERNEL_PATCHVER:=5.4%g' {} \;
-	echo "Done"
-	echo "Set to kernel 5.4 for mvebu arch (WRT)"
-	find target/linux/mvebu -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.10%KERNEL_PATCHVER:=5.4%g' {} \;
-	echo "Done"
-	echo "Set to kernel 5.4 for mediatek arch (BPI-R2)"
-	find target/linux/mediatek -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.10%KERNEL_PATCHVER:=5.4%g' {} \;
-	echo "Done"
-	if [ -f package/kernel/mac80211/patches/build/firmware-replace-HOTPLUG-with-UEVENT-in-FW_ACTION-defines.patch ]; then
-		rm -f package/kernel/mac80211/patches/build/firmware-replace-HOTPLUG-with-UEVENT-in-FW_ACTION-defines.patch
-	fi
-	#if [ -f package/kernel/rtl8812au-ct/patches/003-wireless-5.8.patch ]; then
-	#	rm -f package/kernel/rtl8812au-ct/patches/003-wireless-5.8.patch
-	#fi
-	if [ -f target/linux/mvebu/patches-5.4/021-arm64-dts-marvell-armada-37xx-Move-PCIe-comphy-handl.patch ]; then
-		rm -f target/linux/mvebu/patches-5.4/021-arm64-dts-marvell-armada-37xx-Move-PCIe-comphy-handl.patch
-	fi
-	if [ -f target/linux/mvebu/patches-5.4/022-arm64-dts-marvell-armada-37xx-Move-PCIe-max-link-spe.patch ]; then
-		rm -f target/linux/mvebu/patches-5.4/022-arm64-dts-marvell-armada-37xx-Move-PCIe-max-link-spe.patch
-	fi
-	echo "rm -rf $OMR_TARGET/${OMR_KERNEL}/source/package/boot/uboot-rockchip"
-	rm -rf "${OMR_TARGET}/${OMR_KERNEL}/source/package/boot/uboot-rockchip"
-	#rm -f target/linux/rockchip/files/arch/arm64/boot/dts/rockchip/rk3568-photonicat.dts
-	echo "CONFIG_VERSION_CODE=5.4" >> ".config"
-	if [ "$OMR_TARGET" = "rpi5" ]; then
-		echo "Sorry but kernel 5.4 is not supported on your arch yet"
-		NOT_SUPPORTED="1"
-		exit 1
-	fi
-	if ([ "$OMR_TARGET" = "bpi-r3" ] || [ "$OMR_TARGET" = "bpi-r4" ] || [ "$OMR_TARGET" = "bpi-r4-poe" ]); then
-		echo "Sorry but kernel 5.4 is not supported on your arch"
-		NOT_SUPPORTED="1"
-		exit 1
-	fi
-	if ([ "$OMR_TARGET" = "z8102ax_128m" ] || [ "$OMR_TARGET" = "z8102ax_64m" ]); then
-		echo "Sorry but kernel 5.4 is not supported on your arch yet"
-		NOT_SUPPORTED="1"
-		exit 1
-	fi
-	if [ "$OMR_TARGET" = "rutx50" ]; then
-		echo "Sorry but kernel 5.4 is not supported on your arch yet"
-		NOT_SUPPORTED="1"
-		#exit 1
-	fi
-fi
-if [ "$OMR_KERNEL" = "6.1" ]; then
-	echo "Set to kernel 6.1 for x86 arch"
-	find target/linux/x86 -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.10%KERNEL_PATCHVER:=6.1%g' {} \;
-	find target/linux/x86 -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.1 for rockchip arch (R2S/R4S)"
-	find target/linux/rockchip -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	#echo "Set to kernel 6.1 for ipq807x"
-	#find target/linux/ipq807x -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	#echo "Done"
-	echo "Set to kernel 6.1 for bcm27xx"
-	find target/linux/bcm27xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.1 for mvebu"
-	find target/linux/mvebu -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.1 for mediatek"
-	find target/linux/mediatek -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.1 for ipq806x"
-	find target/linux/ipq806x -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.1 for ipq40xx"
-	find target/linux/ipq40xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.1 for ramips"
-	find target/linux/ramips -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=5.15%KERNEL_PATCHVER:=6.1%g' {} \;
-	echo "Done"
-	rm -f target/linux/bcm27xx/patches-6.1/950-0509-README-Add-README.md-with-CI-kernel-build-status-tag.patch
-	rm -f target/linux/bcm27xx/patches-6.1/950-0555-README.md-Replace-6.0-build-status-with-6.2.patch
-	rm -f target/linux/mvebu/patches-6.1/102-leds-turris-omnia-support-HW-controlled-mode-via-pri.patch
-	rm -f target/linux/bcm27xx/modules/sound.mk
-	rm -f package/kernel/rtl8812au-ct/patches/002-*
-	rm -f package/kernel/rtl8812au-ct/patches/003-*
-	rm -f package/kernel/rtl8812au-ct/patches/004-*
-	rm -f package/kernel/rtl8812au-ct/patches/100-api_update.patch
-	#rm -f target/linux/bcm27xx/modules/sound.mk
-	rm -f package/libs/elfutils/patches/101-no-fts.patch
-	#rm -f package/kernel/mwlwifi/patches/001-*
-	#rm -f package/kernel/mwlwifi/patches/002-*
-	#rm -f package/kernel/mwlwifi/patches/003-*
-	#rm -rf package/kernel/mt76
-	rm -rf target/linux/ipq40xx/files/drivers/net/dsa
-	rm -rf target/linux/ipq40xx/files/drivers/net/ethernet
-
-#	echo "CONFIG_DEVEL=y" >> ".config"
-#	echo "CONFIG_NEED_TOOLCHAIN=y" >> ".config"
-#	echo "CONFIG_TOOLCHAINOPTS=y" >> ".config"
-#	echo 'CONFIG_BINUTILS_VERSION_2_36_1=y' >> ".config"
-#	echo 'CONFIG_BINUTILS_VERSION="2.36.1"' >> ".config"
-#	echo "CONFIG_BINUTILS_USE_VERSION_2_36_1=y" >> ".config"
-#	#echo "CONFIG_GCC_USE_VERSION_10=y" >> ".config"
-#	#echo "CONFIG_GCC_VERSION_10=y" >> ".config"
-#	#echo 'CONFIG_GCC_VERSION="10.3.0"' >> ".config"
-	echo "CONFIG_VERSION_CODE=6.1" >> ".config"
-#	#echo "CONFIG_GCC_USE_VERSION_10=y" >> ".config"
-	if [ "$TARGET" = "bpi-r2" ]; then
-		echo "# CONFIG_VERSION_CODE_FILENAMES is not set" >> ".config"
-	fi
-	if [ "$OMR_TARGET" = "bpi-r1" ]; then
-		echo "Sorry but kernel 6.1 is not supported on your arch yet"
-		NOT_SUPPORTED="1"
-		#exit 1
-	fi
-fi
 if [ "$OMR_KERNEL" = "6.6" ]; then
-	echo "Set to kernel 6.6 for x86 arch"
-	find target/linux/x86 -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for mediatek"
-	find target/linux/mediatek -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for qualcommmax"
-	find target/linux/qualcommax -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for bcm27xx"
-	find target/linux/bcm27xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for ipq40xx"
-	find target/linux/ipq40xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for ipq806x"
-	find target/linux/ipq806x -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for kirkwood"
-	find target/linux/kirkwood -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for mpc85xx"
-	find target/linux/mpc85xx -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for mvebu"
-	find target/linux/mvebu -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for ramips"
-	find target/linux/ramips -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.6 for rockchip"
-	find target/linux/rockchip -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.1%KERNEL_PATCHVER:=6.6%g' {} \;
-	echo "Done"
-
 	#[ -d target/linux/ipq40xx/files-6.6/arch/arm/boot/dts/qcom ] && mv -f target/linux/ipq40xx/files-6.6/arch/arm/boot/dts/qcom/* target/linux/ipq40xx/files-6.6/arch/arm/boot/dts/ && rm -fr target/linux/ipq40xx/files-6.6/arch/arm/boot/dts/qcom
 	#echo "CONFIG_VERSION_CODE=6.6" >> ".config"
 	#echo "# CONFIG_PACKAGE_kmod-gpio-button-hotplug is not set" >> ".config"
@@ -850,46 +583,6 @@ if [ "$OMR_KERNEL" = "6.6" ]; then
 		echo "Sorry but kernel 6.6 is not supported on your arch yet"
 		NOT_SUPPORTED="1"
 	fi
-fi
-if [ "$OMR_KERNEL" = "6.10" ]; then
-	echo "Set to kernel 6.10 for x86 arch"
-	find target/linux/x86 -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.6%KERNEL_PATCHVER:=6.10%g' {} \;
-	echo "Done"
-	echo "Set to kernel 6.10 for mediatek"
-	find target/linux/mediatek -type f -name Makefile -exec sed -i 's%KERNEL_PATCHVER:=6.6%KERNEL_PATCHVER:=6.10%g' {} \;
-	echo "Done"
-	echo "CONFIG_VERSION_CODE=6.10" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-gpio-button-hotplug is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-meraki-mx100 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-gpio-nct5104d is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-r8168 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-button-hotplug is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-cryptodev is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-trelay is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_464xlat is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-nat46 is not set" >> ".config"
-	echo "# CONFIG_PACKAGE_kmod-ath10k-ct-smallbuffers is not set" >> ".config"
-	echo "CONFIG_BPF_TOOLCHAIN=y" >> ".config"
-	echo "CONFIG_BPF_TOOLCHAIN_HOST=y" >> ".config"
-	echo "CONFIG_KERNEL_BPF_EVENTS=y" >> ".config"
-	echo "CONFIG_KERNEL_DEBUG_INFO=y" >> ".config"
-	echo "CONFIG_KERNEL_DEBUG_INFO_BTF=y" >> ".config"
-	echo "CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y" >> ".config"
-	echo "# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set" >> ".config"
-	echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
-	# Remove for now packages that doesn't compile
-	rm -rf package/kernel/mt76
-	rm -rf package/kernel/rtl8812au-ct
-	# Remove not needed patches
-	rm -f package/kernel/mac80211/patches/build/200-Revert-wifi-iwlwifi-Use-generic-thermal_zone_get_tri.patch
-	rm -f package/kernel/mac80211/patches/build/210-revert-split-op.patch
-	rm -f package/kernel/mac80211/patches/subsys/301-mac80211-sta-randomize-BA-session-dialog-token-alloc.patch
-	rm -f package/kernel/mac80211/patches/build/240-backport_genl_split_ops.patch
-	rm -f package/kernel/mac80211/patches/build/250-backport_iwlwifi_thermal.patch
-	rm -f package/kernel/rtl8812au-ct/patches/099-cut-linkid-linux-version-code-conditionals.patch
-	rm -f package/kernel/rtl8812au-ct/patches/100-api_update.patch
-	echo 'CONFIG_KERNEL_GIT_CLONE_URI="https://github.com/multipath-tcp/mptcp_net-next.git"' >> ".config"
-	echo 'CONFIG_KERNEL_GIT_REF="30be9e34452a634aab77a15634890e9c7637812a"' >> ".config"
 fi
 if [ "$OMR_KERNEL" = "6.12" ]; then
 	echo "Set to kernel 6.12 for x86 arch"
@@ -1018,13 +711,13 @@ rm -rf feeds/${OMR_KERNEL}/luci/modules/luci-mod-network
 
 if [ -d feeds/${OMR_KERNEL}/${OMR_DIST}/luci-mod-status ]; then
 	rm -rf feeds/${OMR_KERNEL}/luci/modules/luci-mod-status
-elif [ "$OMR_KERNEL" = "6.6" ] || [ "$OMR_KERNEL" = "6.10" ] || [ "$OMR_KERNEL" = "6.11" ] || [ "$OMR_KERNEL" = "6.12" ] || [ "$OMR_KERNEL" = "6.18" ]; then
+elif [ "$OMR_KERNEL" = "6.6" ]  || [ "$OMR_KERNEL" = "6.11" ] || [ "$OMR_KERNEL" = "6.12" ] || [ "$OMR_KERNEL" = "6.18" ]; then
 	cd feeds/${OMR_KERNEL}
 	#if ! patch -Rf -N -p1 -s --dry-run < ../../patches/luci-syslog-6.6.patch; then
 	#	patch -N -p1 -s < ../../patches/luci-syslog-6.6.patch
 	#fi
-	if ! patch -Rf -N -p1 -s --dry-run < ../../patches/luci-syslog-6.10.patch; then
-		patch -N -p1 -s < ../../patches/luci-syslog-6.10.patch
+	if ! patch -Rf -N -p1 -s --dry-run < ../../patches/luci-syslog-wrapper.patch; then
+		patch -N -p1 -s < ../../patches/luci-syslog-wrapper.patch
 	fi
 	cd -
 else
@@ -1044,9 +737,6 @@ fi
 
 [ -d feeds/${OMR_KERNEL}/${OMR_DIST}/luci-app-statistics ] && rm -rf feeds/${OMR_KERNEL}/luci/applications/luci-app-statistics
 [ -d feeds/${OMR_KERNEL}/${OMR_DIST}/luci-proto-modemmanager ] && rm -rf feeds/${OMR_KERNEL}/luci/protocols/luci-proto-modemmanager
-#if [ -d ${OMR_FEED}/netifd ] && [ "${OMR_KERNEL}" != "5.4" ]; then
-#	rm -rf ${OMR_TARGET}/${OMR_KERNEL}/source/package/network/config/netifd
-#fi
 [ -d ${OMR_FEED}/libgpiod ] && rm -rf feeds/${OMR_KERNEL}/packages/libs/libgpiod
 [ -d ${OMR_FEED}/iperf3 ] && rm -rf feeds/${OMR_KERNEL}/packages/net/iperf3
 [ -d ${OMR_FEED}/golang ] && {
@@ -1056,16 +746,13 @@ fi
 [ -d ${OMR_FEED}/openvpn ] && rm -rf feeds/${OMR_KERNEL}/packages/net/openvpn
 [ -d ${OMR_FEED}/iproute2 ] && rm -rf feeds/${OMR_KERNEL}/packages/network/utils/iproute2
 [ -d ${CUSTOM_FEED}/syslog-ng ] && rm -rf feeds/${OMR_KERNEL}/packages/admin/syslog-ng
-([ "$OMR_KERNEL" = "6.6" ] || [ "$OMR_KERNEL" = "6.10" ]) && [ -d ${OMR_FEED}/xtables-addons ] && rm -rf feeds/${OMR_KERNEL}/packages/net/xtables-addons
+([ "$OMR_KERNEL" = "6.6" ] ) && [ -d ${OMR_FEED}/xtables-addons ] && rm -rf feeds/${OMR_KERNEL}/packages/net/xtables-addons
 
 echo "Add Occitan translation support"
 cd feeds/${OMR_KERNEL}
 if ! patch -Rf -N -p1 -s --dry-run < ../../patches/luci-occitan.patch; then
 	patch -N -p1 -s < ../../patches/luci-occitan.patch
 	#sh feeds/luci/build/i18n-add-language.sh oc
-fi
-if [ "$OMR_KERNEL" = "5.4" ] && ! patch -Rf -N -p1 -s --dry-run < ../../patches/luci-base-add_array_sort_utilities.patch; then
-	patch -N -p1 -s < ../../patches/luci-base-add_array_sort_utilities.patch
 fi
 #if [ -d luci/modules/luci-mod-status ]; then
 #	if ! patch -Rf -N -p1 -s --dry-run < ../../patches/luci-nftables.patch; then
@@ -1102,21 +789,6 @@ if [ -n "$CUSTOM_FEED" ]; then
 else
 	scripts/feeds install -a -d y -f -p openmptcprouter
 fi
-# Use iproute2 package from the normal repo for 5.4
-if [ "$OMR_KERNEL" = "5.4" ]; then
-	scripts/feeds uninstall iproute2
-	scripts/feeds uninstall libbpf
-	scripts/feeds uninstall netifd
-	scripts/feeds install iproute2
-	scripts/feeds install netifd
-#else
-#	scripts/feeds uninstall rust
-#	scripts/feeds install -p packages rust
-fi
-#if [ "$OMR_KERNEL" != "5.4" ] && [ "$OMR_KERNEL" != "6.1" ]; then
-#	scripts/feeds uninstall netifd
-#	scripts/feeds install netifd
-#fi
 cp .config.keep .config
 scripts/feeds install kmod-macremapper
 echo "Done"
