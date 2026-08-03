@@ -559,7 +559,7 @@ if [ "$OMR_KERNEL" = "6.6" ]; then
 	#echo "# CONFIG_PACKAGE_kmod-r8168 is not set" >> ".config"
 	#echo "# CONFIG_PACKAGE_kmod-button-hotplug is not set" >> ".config"
 	#echo "# CONFIG_PACKAGE_kmod-cryptodev is not set" >> ".config"
-	if [ "$OMR_TARGET" != "ubnt-erx" ] && [ "$OMR_TARGET" != "r7800" ]; then
+	if [ "$OMR_TARGET" != "ubnt-erx" ] && [ "$OMR_TARGET" != "r7800" ] && [ "$OMR_TARGET" != "bpi-r1" ] && [ "$OMR_TARGET" != "bpi-r2" ] && [ "$OMR_TARGET" != "rutx50" ]; then
 		echo "CONFIG_BPF_TOOLCHAIN=y" >> ".config"
 		echo "CONFIG_BPF_TOOLCHAIN_HOST=y" >> ".config"
 		echo "CONFIG_KERNEL_BPF_EVENTS=y" >> ".config"
@@ -668,14 +668,18 @@ if [ "$OMR_KERNEL" = "6.18" ]; then
 	echo "# CONFIG_PACKAGE_464xlat is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-nat46 is not set" >> ".config"
 	echo "# CONFIG_PACKAGE_kmod-ath10k-ct-smallbuffers is not set" >> ".config"
-	echo "CONFIG_BPF_TOOLCHAIN=y" >> ".config"
-	echo "CONFIG_BPF_TOOLCHAIN_HOST=y" >> ".config"
-	echo "CONFIG_KERNEL_BPF_EVENTS=y" >> ".config"
-	echo "CONFIG_KERNEL_DEBUG_INFO=y" >> ".config"
-	echo "CONFIG_KERNEL_DEBUG_INFO_BTF=y" >> ".config"
-	echo "CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y" >> ".config"
-	echo "# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set" >> ".config"
-	echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
+	if [ "$OMR_TARGET" != "ubnt-erx" ] && [ "$OMR_TARGET" != "r7800" ] && [ "$OMR_TARGET" != "bpi-r1" ] && [ "$OMR_TARGET" != "bpi-r2" ] && [ "$OMR_TARGET" != "rutx50" ]; then
+		echo "CONFIG_BPF_TOOLCHAIN=y" >> ".config"
+		echo "CONFIG_BPF_TOOLCHAIN_HOST=y" >> ".config"
+		echo "CONFIG_KERNEL_BPF_EVENTS=y" >> ".config"
+		echo "CONFIG_KERNEL_DEBUG_INFO=y" >> ".config"
+		echo "CONFIG_KERNEL_DEBUG_INFO_BTF=y" >> ".config"
+		echo "CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y" >> ".config"
+		echo "# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set" >> ".config"
+		echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
+	else
+		rm -f target/linux/generic/hack-6.18/999-mptcp-bpf-scheduler.patch
+	fi
 	echo 'CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves -fno-plt -Wno-stringop-truncation -Wno-stringop-overread -Wno-calloc-transposed-args -Wno-error=int-conversion"' >> ".config"
 	# Remove for now packages that doesn't compile
 	#rm -rf package/kernel/mt76
