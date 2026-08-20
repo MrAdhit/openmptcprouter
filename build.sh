@@ -568,6 +568,8 @@ if [ "$OMR_KERNEL" = "6.6" ]; then
 		echo "CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y" >> ".config"
 		echo "# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set" >> ".config"
 		echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
+	else
+		echo "CONFIG_BPF_TOOLCHAIN_NONE=y" >> ".config"
 	fi
 	# Remove for now packages that doesn't compile
 	#rm -rf package/kernel/mt76
@@ -678,6 +680,7 @@ if [ "$OMR_KERNEL" = "6.18" ]; then
 		echo "# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set" >> ".config"
 		echo "CONFIG_KERNEL_MODULE_ALLOW_BTF_MISMATCH=y" >> ".config"
 	else
+		echo "CONFIG_BPF_TOOLCHAIN_NONE=y" >> ".config"
 		rm -f target/linux/generic/hack-6.18/999-mptcp-bpf-scheduler.patch
 	fi
 	echo 'CONFIG_EXTRA_OPTIMIZATION="-fno-caller-saves -fno-plt -Wno-stringop-truncation -Wno-stringop-overread -Wno-calloc-transposed-args -Wno-error=int-conversion"' >> ".config"
