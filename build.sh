@@ -297,10 +297,11 @@ if [ "$OMR_ALL_PACKAGES" = "yes" ]; then
 	echo 'CONFIG_ALL=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo 'CONFIG_ALL_NONSHARED=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
-if [ "$OMR_IMG" = "yes" ] && [ "$OMR_TARGET" = "x86_64" ]; then 
+if [ "$OMR_IMG" = "yes" ] && [ "$OMR_TARGET" = "x86_64" ]; then
 	echo 'CONFIG_VDI_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo 'CONFIG_VMDK_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 	echo 'CONFIG_VHDX_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
+	echo 'CONFIG_QCOW2_IMAGES=y' >> "$OMR_TARGET/${OMR_KERNEL}/source/.config"
 fi
 
 if [ "$OMR_TARGET" = "x86" ] || [ "$OMR_TARGET" = "x86_64" ] || [ "$OMR_TARGET" = "r2s" ] || [ "$OMR_TARGET" = "r3s" ] || [ "$OMR_TARGET" = "r4s" ] || [ "$OMR_TARGET" = "r5s" ] || [ "$OMR_TARGET" = "r5c" ] || [ "$OMR_TARGET" = "rpi2" ] || [ "$OMR_TARGET" = "rpi3" ] || [ "$OMR_TARGET" = "rpi4" ] || [ "$OMR_TARGET" = "rpi5" ] || [ "$OMR_TARGET" = "espressobin" ]; then
